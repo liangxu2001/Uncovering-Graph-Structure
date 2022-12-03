@@ -24,25 +24,30 @@ def displayMatrix(matrix):
 
     randomPerm = np.random.randint(2, size=(200, 200))
 
+    pv = np.matmul(randomPerm, eigenvector.T)
+
     
-    tuplelist = list(enumerate(eigenvector))
+    tuplelist = list(enumerate(pv))
     sort = sorted(tuplelist, key=lambda x: x[1])
 
-    index_list = [i[0] for i in sort]
-    print(w)
 
-    output = matrix[:, index_list]
+    index_list = [i[0] for i in sort]
+
+    output = randomPerm[:, index_list]
     output = output[index_list, :]
 
+    orderedA = np.matmul(np.matmul(output.T, matrix), output)
+
+    print(index_list)
 
         
 
         
     
-    
-    plt.imshow(randomPerm, cmap='Blues')
+    plt.imshow(orderedA, cmap='Blues')
     plt.show()
 
 
-
+displayMatrix(graphA)
+displayMatrix(graphB)
 displayMatrix(graphC)
