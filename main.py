@@ -1,12 +1,8 @@
 import scipy.io
 import matplotlib.pyplot as plt
-from scipy.linalg import svd
-import numpy as np
 from numpy.linalg import eig
 
-
 mat = scipy.io.loadmat('graphs.mat')
-
 
 graphA = mat['A']
 graphB = mat['B']
@@ -14,39 +10,30 @@ graphC = mat['C']
 
 
 def displayMatrix(matrix):
-    w,v = eig(matrix)
+    #Grab all the eigenvectors
+    vals, vects = eig(matrix)
 
-    eigenvalueList = list(enumerate(w))
+    #Find the second largest eigenvalue
+    eigenvalueList = list(enumerate(vals))
     sortEigenvalueList = sorted(eigenvalueList, key=lambda x: x[1])
+    eigVal = sortEigenvalueList[-2][1] 
 
-    secondLargestEigenvalue = sortEigenvalueList[-2]
-    eigenvector = v[secondLargestEigenvalue[0]]
+    #Find second largest eigenvalue's eigenvector
+    maxcol = list(vals).index(eigVal)
+    eigenVect = vects[:,maxcol]
 
-    randomPerm = np.random.randint(2, size=(200, 200))
-
-    pv = np.matmul(randomPerm, eigenvector.T)
-
-    
-    tuplelist = list(enumerate(pv))
+    #Sorted the Eigenvector values from largest to smallest
+    tuplelist = list(enumerate(eigenVect))
     sort = sorted(tuplelist, key=lambda x: x[1])
-
-
     index_list = [i[0] for i in sort]
 
-    output = randomPerm[:, index_list]
+    #Re order the matrix according to new ordering
+    output = matrix[:, index_list]
     output = output[index_list, :]
 
-    orderedA = np.matmul(np.matmul(output.T, matrix), output)
-
-    print(index_list)
-
-        
-
-        
-    
-    plt.imshow(orderedA, cmap='Blues')
+    #Plot Matrix
+    plt.imshow(output, cmap='Blues')
     plt.show()
-
 
 displayMatrix(graphA)
 displayMatrix(graphB)
